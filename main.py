@@ -56,16 +56,19 @@ def run_game():
   response = requests.get(word_source)
   words = response.content.split()
 
-  # Choose the random word, format it, and set it's definition
-  chosen = str(random.choice(words)).replace("b'", "").replace("'", "")
+  while True:
+    # Choose the random word, format it, and set it's definition
+    chosen = str(random.choice(words)).replace("b'", "").replace("'", "")
 
-  if chosen[:-1] != "s":
-    chosen = chosen[:-1]
+    if chosen[:-1] != "s":
+      chosen = chosen[:-1]
   
-  try:
-    definition = get_defintion(chosen)
-  except KeyError:
-    definition = "Unknown"
+    try:
+      definition = get_defintion(chosen)
+      break
+    except KeyError:
+      # Unkown word -> restarts to find new
+      continue
 
   os.system("clear")
 
@@ -116,11 +119,11 @@ def run_game():
 
     elif player.chances == 2:
       print(f"{cr.Fore.RED}{player.chances} guesses left")
-      print("  +---+\n  |   |\n  O   |\n /|\  |\n      |\n      |\n=========")
+      print("  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========")
       
     elif player.chances == 1:
       print(f"{cr.Fore.RED}{player.chances} guesses left")
-      print("  +---+\n  |   |\n  O   |\n /|\  |\n /    |\n      |\n=========")
+      print("  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========")
       
 
     # Print out the important game texts
@@ -145,7 +148,7 @@ def run_game():
         # Player loses
         if player.chances == 0:
           os.system("clear")
-          print("  +---+\n  |   |\n  O   |\n /|\  |\n / \  |\n      |\n=========")
+          print("  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n=========")
           type(f"GAME OVER. You were hanged and ended up dying a slow death :l")
           time.sleep(0.5)
           reveal(chosen, definition)
